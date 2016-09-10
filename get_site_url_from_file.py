@@ -49,6 +49,7 @@ def getUrls(url):
     parser = URLLister()
     parser.feed(htmlSource)
 
+	# 判断第一级页面是否暗链
     anlian = ""
 #    if htmlSource.find('赌博')!=-1 or htmlSource.find('博彩')!=-1:
 #        anlian = u"疑似暗恋"
@@ -60,8 +61,9 @@ def getUrls(url):
 
     urlList = []
 
+	# 提取有用的链接并处理
     for suburl in parser.urls:
-        if suburl.find('=')!=-1 or suburl.startswith('http://')>=2:
+        if suburl.find('=') != -1:
             if suburl.startswith('/') or suburl.startswith('.'):
                 suburl = url+suburl
             elif not suburl.startswith('http://'):
