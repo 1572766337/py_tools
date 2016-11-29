@@ -23,6 +23,8 @@ class AutoSqli(object):
 		self.referer = referer
 		self.cookie = cookie
 		self.start_time = time.time()
+		
+		self.run()
 
 	#新建扫描任务
 	def task_new(self):
@@ -44,15 +46,18 @@ class AutoSqli(object):
 	def scan_start(self):
 		headers = {'Content-Type': 'application/json'}
 		#需要扫描的地址
-		payload = {'url': self.target}
+		payload = {'url': ''+self.target}
 		url = self.server + 'scan/' + self.taskid + '/start'
 		#http://127.0.0.1:8557/scan/xxxxxxxxxx/start
-		t = json.loads(requests.post(url, data=json.dumps(payload), headers=headers).text)
-		self.engineid = t['engineid']
-		if len(str(self.engineid)) > 0 and t['success']:
-			print 'Started scan'
-			return True
-		return False
+		try:
+			t = json.loads(requests.post(url, data=json.dumps(payload), headers=headers).text)
+			self.engineid = t['engineid']
+			if len(str(self.engineid)) > 0 and t['success']:
+				print 'Started scan'
+				return True
+			return False
+		except ValueError:
+			print 'Error: SQLmap return ValueError, maybe you should running with Linux.'
 
 	#扫描任务的状态
 	def scan_status(self):
@@ -118,5 +123,5 @@ class AutoSqli(object):
 		print time.time() - self.start_time
 
 if __name__ == '__main__':
-	t = AutoSqli('http://127.0.0.1:8775', 'http://192.168.2.141:90/NSH_list.asp?ContentID=014')
+	t = AutoSqli('http://127.0.0.1:8775', 'http://localhost/sql3.php?id=1')
 	t.run()
